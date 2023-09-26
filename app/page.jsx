@@ -11,7 +11,7 @@ export default function Home() {
       </h1>
       <p className="desc text-center">
         {" "}
-        Nojoda por fin{" "}
+        Welcome to the Future{" "}
       </p>
       
       <Feed />

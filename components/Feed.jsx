@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import { useState, useEffect } from "react";
@@ -17,24 +17,58 @@ const PromptCardList = ({ data, handleTagClick }) => {
     </div>
   );
 };
+
 const Feed = () => {
-  const [searchText, setSearchText] = useState('');
+  const [allPosts, setAllPosts] = useState([]);
+
+  // Search
+  const [searchText, setSearchText] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResults, setSearchedResults] = useState([]);
   const [posts, setPosts] = useState([]);
 
-  const handleSearchChange = (e) => {
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt");
+    const data = await response.json();
 
+    setAllPosts(data);
   };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
-
-      setPosts(data);
-    }
-
     fetchPosts();
   }, []);
 
+  const filterPrompts = (searchText) => {
+    const regex = new RegExp(searchText, "i");
+
+    return allPosts.filter(
+      (item) =>
+        regex.test(item.creator.username) ||
+        regex.test(item.tag) ||
+        regex.test(item.prompt)
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+
+    //debounce
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchedResults = filterPrompts(e.target.value);
+        setSearchedResults(searchedResults);
+      }, 500)
+    );
+  };
+
+  const handleTagClick = (tagName) => {
+    setSearchText(tagName);
+
+    const searchedResults = filterPrompts(tagName);
+    setSearchedResults(searchedResults);
+  };
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
@@ -48,11 +82,14 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      {/* All prompts*/}
+      {searchText ? (
+        <PromptCardList data={searchedResults} handleTagClick={handleTagClick} />
+      ) : (
+        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+      )}
     </section>
   );
 };
 
 export default Feed;
-
-// 2:13:58
