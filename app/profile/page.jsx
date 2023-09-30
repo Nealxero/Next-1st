@@ -1,8 +1,10 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import Profile from '@components/Profile'
+
+import Profile from "@components/Profile";
 
 import React from 'react'
 
@@ -10,7 +12,7 @@ const MyProfile = () => {
   const router = useRouter();
     const {data : session} = useSession();
 
-    const [posts, setPosts] = useState([]);
+    const [myPosts, setMyPosts] = useState([]);
 
 
     useEffect(() => {
@@ -18,7 +20,7 @@ const MyProfile = () => {
           const response = await fetch(`/api/users/${session?.user.id}/posts`);
           const data = await response.json();
     
-          setPosts(data);
+          setMyPosts(data);
         }
     
       if (session?.user.id )  fetchPosts();
@@ -39,10 +41,10 @@ const MyProfile = () => {
               method: 'DELETE'
             });
 
-            const filteredPosts = posts  .filter((p) => 
+            const filteredPosts = myPosts.filter((p) => 
               p._id !== post._id );
 
-              setPosts(filteredPosts);
+              setMyPosts(filteredPosts);
             
           } catch (error){
             console.log(error)
@@ -53,7 +55,7 @@ const MyProfile = () => {
     <Profile
         name="My"
         desc="Welcome to your Profile"
-        data={posts}
+        data={myPosts}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
     />
@@ -62,4 +64,3 @@ const MyProfile = () => {
 
 export default MyProfile;
 
-//2:48:00 

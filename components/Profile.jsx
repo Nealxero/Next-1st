@@ -27,4 +27,4 @@ const Profile = ({name, desc, data, handleEdit, handleDelete}) => {
   )
 }
 
-export default Profile
+export default Profile;
