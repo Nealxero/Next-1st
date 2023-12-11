@@ -66,8 +66,8 @@ const Feed = () => {
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
 
-    const searchedResults = filterPrompts(tagName);
-    setSearchedResults(searchedResults);
+    const searchResults = filterPrompts(tagName);
+    setSearchedResults(searchResults);
   };
   return (
     <section className="feed">
